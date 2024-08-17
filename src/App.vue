@@ -1,6 +1,8 @@
 <template>
   <v-app>
+
     <v-main>
+      <Header />
       <HomePage />
     </v-main>
 
@@ -10,5 +12,6 @@
 
 <script setup>
 import HomePage from '@/view/HomePage.vue'
+import Header from '@/components/Header.vue'
   //
 </script>

@@ -6,8 +6,8 @@ import AddPhone from '@/components/AddPhone.vue'
 import { ref, computed, nextTick } from 'vue';
 import { useDate } from 'vuetify'
 import { useDeviceStore } from '@/store/deviceStore.js'
-import EditPhone from './EditPhone.vue';
 const deviceStore = useDeviceStore()
+import EditPhone from './EditPhone.vue';
 
 const headers = [
     { title: 'Fecha de creación', key: 'date' },

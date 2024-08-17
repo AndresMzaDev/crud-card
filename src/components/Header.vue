@@ -8,7 +8,7 @@ const loading = ref(false);
 </script>
 
 <template>
-    <v-app-bar flat color="transparent">
+    <v-app-bar flat color="white">
         <!-- <v-app-bar-nav-icon> <v-img height="100" src="@/assets/logo.svg" /></v-app-bar-nav-icon> -->
 
         <v-img class="img-class" height="10rem" src="@/assets/LogoMUVS.png" />

@@ -1,28 +1,18 @@
 <script setup>
-import { computed, ref, reactive } from 'vue';
+import { computed, ref, watch } from 'vue';
 import DataBrand from '@/dataBase/DataBrand.js'
-import DataPhone from '@/dataBase/DataPhone.js'
 // import DataBrand from '@/dataBase/DataBrand.js'
 import { useDeviceStore } from '@/store/deviceStore.js'
 const deviceStore = useDeviceStore()
 
-const brand = ref()
+const data = defineProps({
+    itemEdit: Object,
+    indexEdit: Number
+});
+
 const loadingBtn = ref(false)
-const device = reactive(
-    {
-        brand: '',
-        model: '',
-        IMEI: '',
-        phoneNumber: '',
-        date: '',
-    },
-)
 const formValidate = ref()
-const modelName = ref(
-    {
-        model: []
-    }
-)
+
 const rules = {
 
     generalRules: [
@@ -50,26 +40,21 @@ const rules = {
 const emit = defineEmits(["goBack"]);
 
 const getModel = computed(() => {
-    const data = DataBrand.find(element => element.key === device.brand)
-    console.log(data);
-    return data ? data.model : []
-    // if (brand) {
-    //     const data = DataBrand.find(element => element.key === brand.value)
-    //     console.log(data);
-    //     return data ? data.model : []
-    // } else {
-    //     return []
-    // }
-
+    const dataResult = DataBrand.find(element => element.key === data.itemEdit.brand)
+    return dataResult ? dataResult.model : []
 })
 
-function addDeice() {
+watch(data.itemEdit, (newValue, oldValue) => {
+    console.log(newValue.brand, oldValue.brand);
+    if (newValue.brand != oldValue.brand) {
+        data.itemEdit.model = null
+    }
+})
+
+function editDevice() {
     loadingBtn.value = true
-    const now = new Date();
-    device.date = now
-    console.log(device);
     setTimeout(() => {
-        deviceStore.addItems(device)
+        deviceStore.editItems(data.indexEdit, data.itemEdit)
         loadingBtn.value = false
         emit('goBack')
     }, 1000);
@@ -81,7 +66,7 @@ function addDeice() {
     <v-card rounded="lg">
         <v-card-title class="d-flex justify-space-between align-center">
             <div class="text-h5 text-medium-emphasis ps-2">
-                Agregar Dispositivo Nuevo
+                Editar Dispositivo
             </div>
 
             <v-btn icon="mdi-close" variant="text" @click="emit('goBack')"></v-btn>
@@ -89,37 +74,38 @@ function addDeice() {
 
         <v-divider class="mb-4"></v-divider>
 
+
         <v-card-text>
             <div class="text-medium-emphasis mb-4">
-                Agrega todos los campos solicitados por el formulario
+                Editar todos los campos solicitados por el formulario
             </div>
             <v-sheet class="pa-3" border rounded="">
-                {{ formValidate }}
+
                 <v-form v-model="formValidate">
                     <v-row>
                         <v-col cols="6">
                             <div class="mb-2">Ingrese la Marca <span class="text-primary">*</span></div>
-                            <v-select v-model="device.brand" required :rules="rules.generalRules" class="text-subtitle-1"
-                                base-color="secondary" color="primary" variant="outlined" :items="DataBrand"
-                                density="compact" item-title="name" placeholder="Marca" item-value="key"
-                                clearable></v-select>
+                            <v-select v-model="data.itemEdit.brand" @update:modelValue="data.itemEdit.model = null" required
+                                :rules="rules.generalRules" class="text-subtitle-1" base-color="secondary" color="primary"
+                                variant="outlined" :items="DataBrand" density="compact" item-title="name"
+                                placeholder="Marca" item-value="key" clearable></v-select>
                         </v-col>
 
                         <v-col cols="6">
                             <div class="mb-2">Ingrese el modelo <span class="text-primary">*</span></div>
-                            <v-select v-model="device.model" :items="getModel" required :rules="rules.generalRules"
+                            <v-select v-model="data.itemEdit.model" :items="getModel" required :rules="rules.generalRules"
                                 class="text-subtitle-1" base-color="secondary" color="primary" variant="outlined"
                                 density="compact" placeholder="Modelo" clearable></v-select>
                         </v-col>
                         <v-col cols="6">
                             <div class="mb-2">Ingrese el IMEI <span class="text-primary">*</span></div>
-                            <v-text-field v-model="device.IMEI" counter class="text-subtitle-1" required :rules="rules.imei"
-                                base-color="secondary" color="primary" variant="outlined" density="compact"
-                                placeholder="IMEI" clearable></v-text-field>
+                            <v-text-field v-model="data.itemEdit.IMEI" counter class="text-subtitle-1" required
+                                :rules="rules.imei" base-color="secondary" color="primary" variant="outlined"
+                                density="compact" placeholder="IMEI" clearable></v-text-field>
                         </v-col>
                         <v-col cols="6">
                             <div class="mb-2">Ingrese el Número Telefónico <span class="text-primary">*</span></div>
-                            <v-text-field v-model="device.phoneNumber" counter required :rules="rules.phone"
+                            <v-text-field v-model="data.itemEdit.phoneNumber" counter required :rules="rules.phone"
                                 class="text-subtitle-1" base-color="secondary" color="primary" variant="outlined"
                                 density="compact" placeholder="+999999999" clearable></v-text-field>
                         </v-col>
@@ -140,7 +126,7 @@ function addDeice() {
         <v-card-actions class="my-2 d-flex justify-end">
 
             <v-btn :loading="loadingBtn" :disabled="!formValidate" class="text-none text-subtitle-1 text-white"
-                color="primary" variant="outlined" text="Agregar Dispositivo" @click="addDeice"></v-btn>
+                color="primary" variant="outlined" text="Editar Dispositivo" @click="editDevice"></v-btn>
         </v-card-actions>
     </v-card>
 </template>

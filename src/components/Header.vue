@@ -1,5 +1,7 @@
 <script setup>
 import { ref } from 'vue';
+import { useDeviceStore } from '@/store/deviceStore.js'
+const deviceStore = useDeviceStore()
 
 const loading = ref(false);
 
@@ -13,8 +15,8 @@ const loading = ref(false);
         <!-- <v-img v-if="useMdAndUp" class="img-class"  height="10rem" src="@/assets/logotipoH.png" /> -->
         <!-- <v-img v-else class="img-class"  height="10rem" src="@/assets/logotipo.png" /> -->
 
-        <v-text-field :loading="loading" append-inner-icon="mdi-magnify" density="compact" label="Buscar Dispositivo"
-            variant="solo" hide-details single-line></v-text-field>
+        <v-text-field v-model="deviceStore.search" :loading="loading" append-inner-icon="mdi-magnify" density="compact"
+            label="Buscar Dispositivo" variant="solo" hide-details single-line></v-text-field>
         <v-spacer></v-spacer>
         <v-btn-toggle rounded="0" color="deep-purple-accent-3" group class="d-md-none-and-up hidden-xs">
             <v-btn class="text-capitalize " size="x-small" disabled variant="text" style="border-radius: 8px">
